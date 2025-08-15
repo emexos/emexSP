@@ -97,9 +97,21 @@ void keyboard_handler(void) {
 
     uint8_t scancode = keyboard_read_data();
 
+    // Handle extended keys (0xE0 prefix)
+    static bool extended_key = false;
+    if (scancode == 0xE0) {
+        extended_key = true;
+        return;
+    }
+
     // Handle key releases (bit 7 set)
     if (scancode & 0x80) {
         scancode &= 0x7F; // Remove release bit
+
+        if (extended_key) {
+            extended_key = false;
+            return;
+        }
 
         switch (scancode) {
             case KEY_LSHIFT:
@@ -117,6 +129,50 @@ void keyboard_handler(void) {
     }
 
     // Handle key presses
+    if (extended_key) {
+        extended_key = false;
+
+        // Handle extended keys
+        switch (scancode) {
+            case 0x53: // Delete key
+                if (kb_buffer.count < KEYBOARD_BUFFER_SIZE - 1) {
+                    kb_buffer.buffer[kb_buffer.head] = KEY_DELETE_CHAR;
+                    kb_buffer.head = (kb_buffer.head + 1) % KEYBOARD_BUFFER_SIZE;
+                    kb_buffer.count++;
+                }
+                break;
+            case 0x48: // Up arrow
+                if (kb_buffer.count < KEYBOARD_BUFFER_SIZE - 1) {
+                    kb_buffer.buffer[kb_buffer.head] = KEY_UP_ARROW;
+                    kb_buffer.head = (kb_buffer.head + 1) % KEYBOARD_BUFFER_SIZE;
+                    kb_buffer.count++;
+                }
+                break;
+            case 0x50: // Down arrow
+                if (kb_buffer.count < KEYBOARD_BUFFER_SIZE - 1) {
+                    kb_buffer.buffer[kb_buffer.head] = KEY_DOWN_ARROW;
+                    kb_buffer.head = (kb_buffer.head + 1) % KEYBOARD_BUFFER_SIZE;
+                    kb_buffer.count++;
+                }
+                break;
+            case 0x4B: // Left arrow
+                if (kb_buffer.count < KEYBOARD_BUFFER_SIZE - 1) {
+                    kb_buffer.buffer[kb_buffer.head] = KEY_LEFT_ARROW;
+                    kb_buffer.head = (kb_buffer.head + 1) % KEYBOARD_BUFFER_SIZE;
+                    kb_buffer.count++;
+                }
+                break;
+            case 0x4D: // Right arrow
+                if (kb_buffer.count < KEYBOARD_BUFFER_SIZE - 1) {
+                    kb_buffer.buffer[kb_buffer.head] = KEY_RIGHT_ARROW;
+                    kb_buffer.head = (kb_buffer.head + 1) % KEYBOARD_BUFFER_SIZE;
+                    kb_buffer.count++;
+                }
+                break;
+        }
+        return;
+    }
+
     switch (scancode) {
         case KEY_LSHIFT:
         case KEY_RSHIFT:

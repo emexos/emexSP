@@ -39,7 +39,13 @@
 #define KEY_F11        0x57
 #define KEY_F12        0x58
 
-// Key buffer size
+// Special characters
+#define KEY_DELETE_CHAR   0x7F  // DEL character
+#define KEY_UP_ARROW      0x80  // Custom codes for arrow keys
+#define KEY_DOWN_ARROW    0x81
+#define KEY_LEFT_ARROW    0x82
+#define KEY_RIGHT_ARROW   0x83
+
 #define KEYBOARD_BUFFER_SIZE 256
 
 typedef struct {
@@ -56,14 +62,12 @@ typedef struct {
     bool caps_lock;
 } KeyboardState;
 
-// Function declarations
+
+
 void keyboard_init(void);
 void keyboard_handler(void);
 bool keyboard_has_key(void);
 char keyboard_get_key(void);
 void keyboard_flush_buffer(void);
-
-// Internal functions (implemented in keyboard.c)
-// These are not exposed in the header since they're static
 
 #endif

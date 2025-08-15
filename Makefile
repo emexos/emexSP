@@ -28,6 +28,7 @@ KERNEL_ENTRY = src/entry.s
 KERNEL_C = src/kernel/kernel.c
 TEXT_UTILS_C = src/include/text/text_utils.c
 STRING_UTILS_C = src/include/text/string_utils.c
+MEMORY_C = src/include/memory/memory.c
 SHELL_C = src/shell/shell.c
 KEYBOARD_C = src/drivers/keyboard/keyboard.c
 
@@ -38,18 +39,18 @@ KERNEL_ENTRY_OBJ = $(BUILD_DIR)/entry.o
 KERNEL_C_OBJ = $(BUILD_DIR)/kernel.o
 TEXT_UTILS_OBJ = $(BUILD_DIR)/text_utils.o
 STRING_UTILS_OBJ = $(BUILD_DIR)/string_utils.o
+MEMORY_OBJ = $(BUILD_DIR)/memory.o
 SHELL_OBJ = $(BUILD_DIR)/shell.o
 KEYBOARD_OBJ = $(BUILD_DIR)/keyboard.o
 
 # All kernel objects
-KERNEL_OBJS = $(KERNEL_ENTRY_OBJ) $(KERNEL_C_OBJ) $(TEXT_UTILS_OBJ) $(STRING_UTILS_OBJ) $(SHELL_OBJ) $(KEYBOARD_OBJ)
+KERNEL_OBJS = $(KERNEL_ENTRY_OBJ) $(KERNEL_C_OBJ) $(TEXT_UTILS_OBJ) $(STRING_UTILS_OBJ) $(MEMORY_OBJ) $(SHELL_OBJ) $(KEYBOARD_OBJ)
 
 # Output files
 KERNEL_ELF = $(BUILD_DIR)/kernel-$(ARCH).elf
 KERNEL_BIN = $(BUILD_DIR)/kernel-$(ARCH).bin
 OS_IMG = $(BUILD_DIR)/emexOS3.img
 
-# Default target
 all: clean compiledb $(OS_IMG) run
 
 # Generate compile_commands.json for language servers
@@ -58,12 +59,12 @@ compiledb: | $(BUILD_DIR)
 	@echo "Generating compile_commands.json in $(BUILD_DIR)..."
 	@make -Bnwk $(KERNEL_C_OBJ) $(TEXT_UTILS_OBJ) $(STRING_UTILS_OBJ) $(SHELL_OBJ) $(KEYBOARD_OBJ) | compiledb -o $(BUILD_DIR)/compile_commands.json
 
-# Create build directory
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DIR)/drivers
 	mkdir -p $(BUILD_DIR)/shell
 	mkdir -p $(BUILD_DIR)/kernel
+	mkdir -p $(BUILD_DIR)/memory
 
 # Bootloader stage 1
 $(BOOT_STAGE1_BIN): $(BOOT_STAGE1) | $(BUILD_DIR)
@@ -79,6 +80,10 @@ $(TEXT_UTILS_OBJ): $(TEXT_UTILS_C) | $(BUILD_DIR)
 
 # String utilities
 $(STRING_UTILS_OBJ): $(STRING_UTILS_C) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Memory utilities
+$(MEMORY_OBJ): $(MEMORY_C) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Keyboard driver

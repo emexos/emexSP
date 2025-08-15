@@ -1,6 +1,5 @@
 #include "../include/boot.h"
 #include "../include/text/text_utils.h"
-#include "../include/memory/memory.h"
 #include "../drivers/keyboard/keyboard.h"
 #include "../shell/shell.h"
 
@@ -21,10 +20,6 @@ void stmain(BootInfo* binfo)
     print_dec(binfo->memmap.entry_count, COLOR_DEFAULT);
     print(" entries\n", COLOR_DEFAULT);
 
-    // Find usable memory region for heap
-    void* heap_start = NULL;
-    size_t heap_size = 0;
-
     for (int i = 0; i < binfo->memmap.entry_count; i++)
     {
         E820Entry* entry = &binfo->memmap.entries[i];
@@ -44,12 +39,6 @@ void stmain(BootInfo* binfo)
             case E820_TYPE_USABLE:
                 type_color = 0x0A; // green
                 type_str = "Usable";
-
-                // Use the largest usable region for heap (above 2MB to avoid low memory)
-                if (entry->base >= 0x200000 && entry->length > heap_size) {
-                    heap_start = (void*)(uintptr_t)entry->base;
-                    heap_size = entry->length;
-                }
                 break;
             case E820_TYPE_RESERVED:
                 type_color = 0x0C; // red
@@ -77,38 +66,11 @@ void stmain(BootInfo* binfo)
         print("\n", COLOR_DEFAULT);
     }
 
-    print("\nInitializing memory manager...\n", COLOR_DEFAULT);
-    if (heap_start && heap_size > MB(1)) { // Only init if we have at least 1MB
-        // Reserve some space for kernel, use the rest for heap
-        void* kernel_heap = (void*)((char*)heap_start + MB(4)); // Skip first 4MB for safety
-        size_t usable_heap_size = heap_size - MB(4);
-
-        if (usable_heap_size > MB(1)) {
-            memory_init(kernel_heap, usable_heap_size);
-            print("Memory manager initialized with ", 0x0A);
-            print_dec(usable_heap_size / 1024, COLOR_DEFAULT);
-            print(" KB heap\n", COLOR_DEFAULT);
-
-            // Test memory allocation
-            void* test_ptr = kmalloc(1024);
-            if (test_ptr) {
-                print("Memory allocation test successful!\n", 0x0A);
-                kfree(test_ptr);
-            } else {
-                print("Memory allocation test failed!\n", 0x0C);
-            }
-        } else {
-            print("Not enough memory for heap initialization\n", 0x0C);
-        }
-    } else {
-        print("No suitable memory region found for heap\n", 0x0C);
-    }
-
     print("\nInitializing keyboard driver...\n", COLOR_DEFAULT);
     keyboard_init();
     print("Keyboard driver initialized successfully!\n", 0x0A);
 
-    print("\nLoading Enhanced Shell...\n", COLOR_DEFAULT);
+    print("\nLoading Shell...\n", COLOR_DEFAULT);
     shell();
 
 halt:
