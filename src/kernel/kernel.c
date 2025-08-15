@@ -1,5 +1,6 @@
 #include "../include/boot.h"
 #include "../include/text/text_utils.h"
+#include "../drivers/keyboard/keyboard.h"
 #include "../shell/shell.h"
 
 void stmain(BootInfo* binfo)
@@ -65,8 +66,12 @@ void stmain(BootInfo* binfo)
         print("\n", COLOR_DEFAULT);
     }
 
+    print("\nInitializing keyboard driver...\n", COLOR_DEFAULT);
+    keyboard_init();
+    print("Keyboard driver initialized successfully!\n", 0x0A);
+
     print("\nLoading Shell...\n", COLOR_DEFAULT);
-    //shell();
+    shell();
 
 halt:
     while (1)
