@@ -1,6 +1,7 @@
 #include "../include/boot.h"
 #include "../include/text/text_utils.h"
 #include "../drivers/keyboard/keyboard.h"
+#include "../include/memory/memory.h"
 #include "../shell/shell.h"
 
 void stmain(BootInfo* binfo)
@@ -10,7 +11,7 @@ void stmain(BootInfo* binfo)
 
     clear(COLOR_DEFAULT);
 
-    print("emexOS3 loaded successful with XPL2 \n", 0x4D);
+    print("emexOS3 loaded successful with XBL2 \n", 0x4D);
 
     print("Binfo at: ", COLOR_DEFAULT);
     print_hex((uint64_t)binfo, COLOR_DEFAULT);
@@ -70,7 +71,14 @@ void stmain(BootInfo* binfo)
     keyboard_init();
     print("Keyboard driver initialized successfully!\n", 0x0A);
 
+    print("\nInitializing memory manager...\n", COLOR_DEFAULT);
+    // Memory manager will be initialized in the shell
+    print("Memory manager ready!\n", 0x0A);
+
     print("\nLoading Shell...\n", COLOR_DEFAULT);
+
+    clear(COLOR_DEFAULT);
+
     shell();
 
 halt:

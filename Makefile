@@ -57,7 +57,7 @@ all: clean compiledb $(OS_IMG) run
 compiledb: | $(BUILD_DIR)
 	@which compiledb > /dev/null 2>&1 || (echo "compiledb is not installed. Please install it using pip install compiledb" && exit 1)
 	@echo "Generating compile_commands.json in $(BUILD_DIR)..."
-	@make -Bnwk $(KERNEL_C_OBJ) $(TEXT_UTILS_OBJ) $(STRING_UTILS_OBJ) $(SHELL_OBJ) $(KEYBOARD_OBJ) | compiledb -o $(BUILD_DIR)/compile_commands.json
+	@make -Bnwk $(KERNEL_C_OBJ) $(TEXT_UTILS_OBJ) $(STRING_UTILS_OBJ) $(MEMORY_OBJ) $(SHELL_OBJ) $(KEYBOARD_OBJ) | compiledb -o $(BUILD_DIR)/compile_commands.json
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -120,7 +120,7 @@ $(OS_IMG): $(BOOT_STAGE1_BIN) $(BOOT_STAGE2_BIN) $(KERNEL_BIN)
 # Clean build files
 clean:
 	rm -rf $(BUILD_DIR)/*.o $(BUILD_DIR)/*.bin $(BUILD_DIR)/*.img $(KERNEL_ELF)
-	rm -rf $(BUILD_DIR)/drivers/*.o $(BUILD_DIR)/shell/*.o $(BUILD_DIR)/kernel/*.o
+	rm -rf $(BUILD_DIR)/drivers/*.o $(BUILD_DIR)/shell/*.o $(BUILD_DIR)/kernel/*.o $(BUILD_DIR)/memory/*.o
 	rm -f $(BUILD_DIR)/compile_commands.json
 
 # Run in QEMU
@@ -146,6 +146,7 @@ dirs:
 	mkdir -p $(BUILD_DIR)/drivers
 	mkdir -p $(BUILD_DIR)/shell
 	mkdir -p $(BUILD_DIR)/kernel
+	mkdir -p $(BUILD_DIR)/memory
 
 # Help target
 help:
