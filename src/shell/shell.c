@@ -21,11 +21,12 @@ static void command_meminfo(void);
 static void command_memtest(void);
 
 void shell() {
-    print("emexOS3 Shell v1.1\n", 0x0E);
-    print("Type 'help' for available commands\n\n", 0x07);
+    print("emexOS3 beta ", 0x0E);
+    print("Type help\n", 0x07);
 
     // Initialize memory manager
     memory_init();
+
 
     // Enable cursor for shell input (nice blinking cursor)
     enable_cursor(14, 15);

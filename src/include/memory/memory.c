@@ -34,7 +34,8 @@ void memory_init(void) {
 
     heap_initialized = 1;
 
-    print("Memory manager initialized\n", 0x0A);
+    print("intializing Memory functions", 0x0A);
+    print("   : finished\n", 0x0E);
     print("Heap at: ", COLOR_DEFAULT);
     print_hex(HEAP_START, COLOR_DEFAULT);
     print(" Size: ", COLOR_DEFAULT);

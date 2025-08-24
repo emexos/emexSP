@@ -67,15 +67,15 @@ void stmain(BootInfo* binfo)
         print("\n", COLOR_DEFAULT);
     }
 
-    print("\nInitializing keyboard driver...\n", COLOR_DEFAULT);
+    print("\nInitializing...\n", COLOR_DEFAULT);
     keyboard_init();
-    print("Keyboard driver initialized successfully!\n", 0x0A);
+    print("Initializing Keyboard driver", 0x0A);
+    print("   : finished\n", 0x0E);
 
-    print("\nInitializing memory manager...\n", COLOR_DEFAULT);
+    print("\nInitializing...\n", COLOR_DEFAULT);
     // Memory manager will be initialized in the shell
-    print("Memory manager ready!\n", 0x0A);
 
-    print("\nLoading Shell...\n", COLOR_DEFAULT);
+    //print("\nLoading Shell...\n", COLOR_DEFAULT);
 
     clear(COLOR_DEFAULT);
 

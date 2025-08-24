@@ -31,6 +31,7 @@ STRING_UTILS_C = src/include/text/string_utils.c
 MEMORY_C = src/include/memory/memory.c
 SHELL_C = src/shell/shell.c
 KEYBOARD_C = src/drivers/keyboard/keyboard.c
+DISK_DRIVER_C = src/drivers/disk/disk_driver.c
 
 # Object files
 BOOT_STAGE1_BIN = $(BUILD_DIR)/stage1.bin
@@ -42,9 +43,10 @@ STRING_UTILS_OBJ = $(BUILD_DIR)/string_utils.o
 MEMORY_OBJ = $(BUILD_DIR)/memory.o
 SHELL_OBJ = $(BUILD_DIR)/shell.o
 KEYBOARD_OBJ = $(BUILD_DIR)/keyboard.o
+DISK_DRIVER_OBJ = $(BUILD_DIR)/disk_driver.o
 
 # All kernel objects
-KERNEL_OBJS = $(KERNEL_ENTRY_OBJ) $(KERNEL_C_OBJ) $(TEXT_UTILS_OBJ) $(STRING_UTILS_OBJ) $(MEMORY_OBJ) $(SHELL_OBJ) $(KEYBOARD_OBJ)
+KERNEL_OBJS = $(KERNEL_ENTRY_OBJ) $(KERNEL_C_OBJ) $(TEXT_UTILS_OBJ) $(STRING_UTILS_OBJ) $(MEMORY_OBJ) $(SHELL_OBJ) $(KEYBOARD_OBJ) $(DISK_DRIVER_OBJ)
 
 # Output files
 KERNEL_ELF = $(BUILD_DIR)/kernel-$(ARCH).elf
@@ -88,6 +90,10 @@ $(MEMORY_OBJ): $(MEMORY_C) | $(BUILD_DIR)
 
 # Keyboard driver
 $(KEYBOARD_OBJ): $(KEYBOARD_C) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Disk driver
+$(DISK_DRIVER_OBJ): $(DISK_DRIVER_C) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Shell
