@@ -7,6 +7,7 @@ This is emexOS, a minimal operating system built from scratch for educational pu
  - simple I/O (shell / text input)
  - Memory Management (heap , malloc)
  - 2 stage bootloader
+ - memFS
 
 ## Upcoming Features
  - Custom File System
